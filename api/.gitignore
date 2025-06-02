@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Environnement
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dossiers de build (si tu as)
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# System files
+.DS_Store
+Thumbs.db
