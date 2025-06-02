@@ -1,0 +1,11 @@
+{
+  "@usage" : "Fill in this file with the users and the associated passwords",
+  "alice": {
+    "login": "lucasreynaud4@gmail.com",
+    "password": "JesuisLucas33!"
+  },
+  "bob": {
+    "login": "tancrede.castets@gmail.com",
+    "password": "contis40"
+  }
+}

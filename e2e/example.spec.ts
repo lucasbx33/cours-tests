@@ -41,3 +41,23 @@ test('login ok', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Mes romans' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 });
+
+test('create roman', async ({ page }) => {
+  await page.goto('/login');
+
+  await page.getByRole('textbox', { name: 'Email' }).fill('lucasreynaud4@gmail.com');
+  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('JesuisLucas33!');
+
+  await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
+  
+  await page.getByRole('button', { name: 'Créer un roman' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Nouveau roman' })).toBeVisible();
+
+  await page.getByRole('textbox', { name: 'Titre du roman' }).fill('test de roman');
+
+  await page.locator('.NgxEditor__Content').type('Titre principal\n\nVoici une première ligne.\nVoici une deuxième ligne.', { delay: 100 });
+
+  await page.getByRole('button', { name: 'Créer' }).click();
+
+});
