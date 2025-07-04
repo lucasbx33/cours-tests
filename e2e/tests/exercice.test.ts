@@ -96,7 +96,7 @@ test.describe('Exercices', () => {
 
     // validation, supression et retour a la page dashboard
       await page.getByRole('button', { name: 'Valider' }).click();
-      await page.locator('a[title="Supprimer"]').click();
+      await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__delete > a > mat-icon').click();
       await page.getByRole('button',{ name: 'Oui'}).click();
       await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
@@ -129,6 +129,8 @@ test('finish exercice ', async ({ page }) =>{
     // terminer l'exercice
     await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__finish > a > mat-icon').click();
       await page.getByRole('button',{ name: 'Oui'}).click();
+      await page.getByText('tancrède').click();
+      await page.getByText('Dashboard' ).click();
       await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
 
@@ -145,6 +147,8 @@ test('finish exercice ', async ({ page }) =>{
     await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__link > a > mat-icon').click();
       await page.getByRole('button',{ name: 'Copier'}).click();
       await page.getByRole('button',{ name: 'Fermer'}).click();
+      await page.getByText('tancrède').click();
+      await page.getByText('Dashboard' ).click();
       await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
 
@@ -164,5 +168,5 @@ test('finish exercice ', async ({ page }) =>{
       await page.getByRole('button',{ name: 'Soumettre'}).click();
       await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
 
-    
+      
   });

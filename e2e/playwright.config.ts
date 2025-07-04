@@ -8,7 +8,7 @@ import { defineBddConfig } from 'playwright-bdd';
 // import dotenv from 'dotenv';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
-const useBdd = true; // process.env['PLAYWRIGHT_USE_BDD'] === '1';
+const useBdd = false; // process.env['PLAYWRIGHT_USE_BDD'] === '1';
 
 const specs = useBdd
   ? defineBddConfig({
@@ -36,7 +36,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://playwright.dev',
+    baseURL: 'https://owl-writey.hemit.fr',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

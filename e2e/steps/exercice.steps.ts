@@ -31,11 +31,11 @@ Given('je suis sur la page de connexion', async () => {
 });
 
 When('je renseigne mon email et mon mot de passe', async () => {
-  const email = __ENV.LOGIN_EMAIL_E2E;
-  const password = __ENV.LOGIN_PASSWORD_E2E;
+  const email = process.env.LOGIN_EMAIL_E2E;
+  const password = process.env.LOGIN_PASSWORD_E2E;
 
   if (!email || !password) {
-    throw new Error('Les variables LOGIN_EMAIL_E2E et LOGIN_PASSWORD_E2E doivent être définies.');
+    throw new Error("Variables d'environnement manquantes : LOGIN_EMAIL_E2E ou LOGIN_PASSWORD_E2E");
   }
 
   await page.getByRole('textbox', { name: 'Email' }).fill(email);
