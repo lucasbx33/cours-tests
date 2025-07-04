@@ -2,12 +2,20 @@ import { test, expect } from '@playwright/test';
 import { LoginPo } from '../pages/login.po';
 import { ExercicePo } from '../pages/exercice.po';
 
+import dotenv from "dotenv";
+dotenv.config();
+
+
 async function login(page) {
   await page.goto('/login');
   await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
 
-  await page.getByRole('textbox', { name: 'Email' }).fill('tancrede.castets@gmail.com');
-  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('contis40');
+  const email = process.env.LOGIN_EMAIL_E2E!;
+  const password = process.env.LOGIN_PASSWORD_E2E!;
+
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('textbox', { name: 'Mot de passe' }).fill(password);
+
   await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
 
   await expect(page.getByRole('heading', { name: 'Mes Romans' })).toBeVisible();
