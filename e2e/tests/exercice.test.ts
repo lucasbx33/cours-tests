@@ -2,9 +2,29 @@ import { test, expect } from '@playwright/test';
 import { LoginPo } from '../pages/login.po';
 import { ExercicePo } from '../pages/exercice.po';
 
+import dotenv from "dotenv";
+dotenv.config();
+
+
+async function login(page) {
+  await page.goto('/login');
+  await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
+
+  const email = process.env.LOGIN_EMAIL_E2E!;
+  const password = process.env.LOGIN_PASSWORD_E2E!;
+
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('textbox', { name: 'Mot de passe' }).fill(password);
+
+  await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
+
+  await expect(page.getByRole('heading', { name: 'Mes Romans' })).toBeVisible();
+}
+
 test.describe('Exercices', () => {
   let loginPo: LoginPo;
   let exercicePo: ExercicePo;
+  
 
   test.beforeEach(async ({ page }) => {
     loginPo = new LoginPo(page);
@@ -13,6 +33,7 @@ test.describe('Exercices', () => {
     await loginPo.goTo();
     await loginPo.logAs('lucasreynaud4@gmail.com', 'JesuisLucas33!');
   });
+  
 
   test('should create a Exercice', async () => {
     await loginPo.logAsUser('alice');
@@ -32,20 +53,9 @@ test.describe('Exercices', () => {
 });
 
  test('create exercice complet', async ({ page }) =>{
-    await page.goto('/login');
+    await login(page);
 
-    // Expects page to have a heading with the name of Installation.
-    await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
-
-    // connexion email et password 
-    await page.getByRole('textbox' , {name : 'Email'}).fill('tancrede.castets@gmail.com');
-    await page.getByRole('textbox', {name : 'Mot de passe'}).fill('contis40');
-
-    await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
-
-    await expect(page.getByRole('heading', {name : 'Mes Romans'})).toBeVisible();
-
-    await page.getByRole('button', { name: ' Créer un exercice ' }).click();
+    await page.locator('#dashboardExercisesHeader > button').click();
 
     await expect(page.getByRole('heading', { name: 'Nouvel exercice' })).toBeVisible();
 
@@ -60,8 +70,8 @@ test.describe('Exercices', () => {
 
     // validation et retour a la page dashboard
       await page.getByRole('button', { name: 'Valider' }).click();
-      await page.getByRole('heading',{ name: 'menu'}).click();
-      await page.getByRole('button', { name: 'Dashboard' }).click();
+      await page.getByText('tancrède').click();
+      await page.getByText('Dashboard' ).click();
       await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
 
@@ -69,20 +79,9 @@ test.describe('Exercices', () => {
   });
 
   test('create exercice complet et supression', async ({ page }) =>{
-    await page.goto('/login');
+    await login(page);
 
-    // Expects page to have a heading with the name of Installation.
-    await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
-
-    // connexion email et password 
-    await page.getByRole('textbox' , {name : 'Email'}).fill('tancrede.castets@gmail.com');
-    await page.getByRole('textbox', {name : 'Mot de passe'}).fill('contis40');
-
-    await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
-
-    await expect(page.getByRole('heading', {name : 'Mes Romans'})).toBeVisible();
-
-    await page.getByRole('button', { name: ' Créer un exercice ' }).click();
+    await page.locator('#dashboardExercisesHeader > button').click();
 
     await expect(page.getByRole('heading', { name: 'Nouvel exercice' })).toBeVisible();
 
@@ -95,54 +94,75 @@ test.describe('Exercices', () => {
      await page.getByRole('spinbutton' , {name : ' Maximum de mots '}).fill('15');
     await page.getByRole('textbox', {name : 'Écrivez le début de votre histoire :'}).fill('Arriver en france a Paris');
 
-    // validation et retour a la page dashboard
+    // validation, supression et retour a la page dashboard
       await page.getByRole('button', { name: 'Valider' }).click();
-      await page.getByRole('link',{ name: 'Supprimer'}).click();
+      await page.locator('a[title="Supprimer"]').click();
       await page.getByRole('button',{ name: 'Oui'}).click();
-      await page.getByRole('button', { name: 'Dashboard' }).click();
       await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
 
 
   });
 
-  test('create exercice incomplet', async ({ page }) =>{
-    await page.goto('/login');
+  test('delete exercice ', async ({ page }) =>{
+    await login(page);
 
-    // Expects page to have a heading with the name of Installation.
-    await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
+    await page.locator('body > app-root > owl-writey-ui > main > owl-dashboard-page > div > div:nth-child(4) > owl-dashboard-exercises > div > owl-dashboard-exercise-card:nth-child(1) > div > mat-card > mat-card-footer > div > a > mat-icon').click();
 
-    // connexion email et password 
-    await page.getByRole('textbox' , {name : 'Email'}).fill('tancrede.castets@gmail.com');
-    await page.getByRole('textbox', {name : 'Mot de passe'}).fill('contis40');
+    await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
+    
+    // supression de l'exercice
+    await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__delete > a > mat-icon').click();
+      await page.getByRole('button',{ name: 'Oui'}).click();
+      await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
-
-    await expect(page.getByRole('heading', {name : 'Mes Romans'})).toBeVisible();
-
-    await page.getByRole('button', { name: ' Créer un exercice ' }).click();
-
-    await expect(page.getByRole('heading', { name: 'Nouvel exercice' })).toBeVisible();
-
-    await page.getByRole('button', { name: 'Valider' }).click();
-
-    await expect(page.getByRole('heading', { name: 'Nouvel exercice' })).toBeVisible();
 
   });
 
-  test('delete all exercice ', async ({ page }) =>{
-    await page.goto('/login');
+test('finish exercice ', async ({ page }) =>{
+    await login(page);
 
-    // Expects page to have a heading with the name of Installation.
-    await expect(page.getByRole('heading', { name: 'connexion' })).toBeVisible();
+    await page.locator('body > app-root > owl-writey-ui > main > owl-dashboard-page > div > div:nth-child(4) > owl-dashboard-exercises > div > owl-dashboard-exercise-card:nth-child(1) > div > mat-card > mat-card-footer > div > a > mat-icon').click();
 
-    // connexion email et password 
-    await page.getByRole('textbox' , {name : 'Email'}).fill('tancrede.castets@gmail.com');
-    await page.getByRole('textbox', {name : 'Mot de passe'}).fill('contis40');
-
-    await page.getByRole('button', { name: 'Connexion' }).nth(1).click();
-
-    await expect(page.getByRole('heading', {name : 'Mes Romans'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
+    
+    // terminer l'exercice
+    await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__finish > a > mat-icon').click();
+      await page.getByRole('button',{ name: 'Oui'}).click();
+      await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
 
 
+  });
+
+  test('link exercice ', async ({ page }) =>{
+    await login(page);
+
+    await page.locator('body > app-root > owl-writey-ui > main > owl-dashboard-page > div > div:nth-child(4) > owl-dashboard-exercises > div > owl-dashboard-exercise-card:nth-child(1) > div > mat-card > mat-card-footer > div > a > mat-icon').click();
+
+    await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
+    
+    // partager l'exercice
+    await page.locator('body > app-root > owl-writey-ui > main > owl-exercise-page > div > div.exercise-page__header > owl-exercise-header-toolbar > div > div.exercise-toolbar__link > a > mat-icon').click();
+      await page.getByRole('button',{ name: 'Copier'}).click();
+      await page.getByRole('button',{ name: 'Fermer'}).click();
+      await expect(page.getByRole('heading', { name: 'Mes exercices' })).toBeVisible();
+
+
+  });
+
+  test('jouer à l\'exercice ', async ({ page }) =>{
+    await login(page);
+
+    await page.locator('body > app-root > owl-writey-ui > main > owl-dashboard-page > div > div:nth-child(4) > owl-dashboard-exercises > div > owl-dashboard-exercise-card:nth-child(1) > div > mat-card > mat-card-footer > div > a > mat-icon').click();
+
+    await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
+    
+    // partager l'exercice
+      await page.getByRole('button',{ name: ' À mon tour ! '}).click();
+      await page.locator('[contenteditable="true"]').click();
+      await page.keyboard.type('test test test');
+      await page.getByRole('button',{ name: 'Soumettre'}).click();
+      await expect(page.getByRole('heading', { name: 'France' })).toBeVisible();
+
+    
   });
